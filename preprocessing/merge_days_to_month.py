@@ -214,7 +214,7 @@ def process_daily_zip_files(zip_dir, output_dir):
     print("\n处理流程全部完成！")
 
 def main():
-    zip_directory = r'F:\data_from_era5'
+    zip_directory = r'M:\era5'
     output_directory = r'M:\era5\output'
 
     try:

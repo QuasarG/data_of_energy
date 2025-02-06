@@ -1,7 +1,7 @@
 import os
 
 # 指定目录路径
-directory = 'M:\era5\output'
+directory = r'M:\era5\output'
 
 # 遍历目录中的所有文件
 for filename in os.listdir(directory):
