@@ -1,0 +1,63 @@
+from folium.plugins import MarkerCluster
+
+import datalibs as dpl
+
+import pandas as pd
+import geopandas as gpd
+import matplotlib.pyplot as plt
+import folium
+import numpy as np
+
+# 加载数据
+data = pd.read_csv(dpl.WIND_POWER_BANK_PATH)
+
+# 创建地图对象
+initial_location = [data['latitude'].iloc[0], data['longitude'].iloc[0]]
+m = folium.Map(location=initial_location, zoom_start=2)
+
+# 创建聚类标记层
+marker_cluster = MarkerCluster().add_to(m)
+
+# 定义容量区间和对应颜色
+capacity_bins = [0, 100, 500, 1000, 5000, float('inf')]  # 6 个边界值
+colors = ['green', 'blue', 'orange', 'red', 'purple']  # 5 个颜色值
+
+
+# 归一化半径函数（对数缩放）
+def normalize_radius(capacity):
+    return np.log10(capacity + 1) * 5  # 调整缩放系数以控制圆圈大小
+
+
+# 添加发电厂标记
+for idx, row in data.iterrows():
+    # 根据容量大小确定颜色
+    capacity = row['capacity_mw']
+    for i, bin_edge in enumerate(capacity_bins):
+        if capacity <= bin_edge:
+            color = colors[i - 1]  # 使用 i-1 来匹配颜色
+            break
+
+    # 归一化半径
+    radius = normalize_radius(capacity)
+
+    # 创建弹出窗口内容
+    popup_content = f"""
+    <b>Country:</b> {row['country']}<br>
+    <b>Capacity:</b> {row['capacity_mw']} MW<br>
+    <b>Latitude:</b> {row['latitude']}<br>
+    <b>Longitude:</b> {row['longitude']}
+    """
+
+    # 添加圆圈标记
+    folium.CircleMarker(
+        location=[row['latitude'], row['longitude']],
+        radius=radius,  # 使用归一化后的半径
+        color=color,  # 根据容量区间设置颜色
+        fill=True,
+        fill_color=color,
+        fill_opacity=0.6,
+        popup=folium.Popup(popup_content, max_width=300)
+    ).add_to(marker_cluster)
+
+# 保存为 HTML 文件
+m.save("power_plants_interactive_map_cluster.html")
