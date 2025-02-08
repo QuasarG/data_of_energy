@@ -3,6 +3,7 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/preprocessing/1990-01.txt" charset="GBK" />
     <file url="file://$PROJECT_DIR$/preprocessing/1990-01output.txt" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/preprocessing/conversion.log" charset="GBK" />
     <file url="file://$PROJECT_DIR$/preprocessing/process_log.txt" charset="GBK" />
   </component>
 </project>
