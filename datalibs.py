@@ -9,8 +9,12 @@ AVERAGE_DAILY_TEMPRATURE = {
     for year in range(1929, 2024 + 1)  # 使用字典推导式
 }
 
-# 1990 - 2024年风速 grib_cache 数据 路径
-# 存在3个目录下
-dir1 = r'M:\era5'
-dir2 = r'F:\data_from_era5'
-dir3 = r'G:\era5'
+# 1990 - 2024年风速 grib 数据 路径
+import calendar
+
+WIND_SPEED_GRIB = {
+    year: f'E:\\大二上\\竞赛\\能经大赛\\data\\grib格式的数据\\{year:04d}-{month:02d}-{day:02d}.grib'
+    for year in range(1990, 2024 + 1)
+    for month in range(1, 12 + 1)
+    for day in range(1, calendar.monthrange(year, month)[1] + 1)
+}

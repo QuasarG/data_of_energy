@@ -1,0 +1,393 @@
+2025-02-08 18:04:48,704 - INFO - 找到 0 个GRIB文件待处理
+2025-02-08 18:05:07,751 - INFO - 找到 1 个GRIB文件待处理
+2025-02-08 18:05:07,752 - INFO - 正在处理文件: E:\PythonProjiects\Data_of_energy_competition\1990-01.grib
+2025-02-08 18:05:07,840 - DEBUG - GRIB文件信息: {'edition': 1, 'gridType': 'regular_ll', 'levelType': 'sfc', 'shortName': '10u'}
+2025-02-08 18:05:13,254 - WARNING - 使用默认参数打开失败，尝试替代方案: argument of type 'bool' is not iterable
+2025-02-08 18:05:18,451 - ERROR - 处理文件 E:\PythonProjiects\Data_of_energy_competition\1990-01.grib 时出错: argument of type 'bool' is not iterable
+Traceback (most recent call last):
+  File "E:\PythonProjiects\Data_of_energy_competition\preprocessing\gribToNc.py", line 96, in convert_grib_to_netcdf
+    ds = xr.open_dataset(grib_file, engine='cfgrib', backend_kwargs=backend_kwargs)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\backends\api.py", line 679, in open_dataset
+    backend_ds = backend.open_dataset(
+                 ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\xarray_plugin.py", line 112, in open_dataset
+    store = CfGribDataStore(
+            ^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\xarray_plugin.py", line 40, in __init__
+    self.ds = opener(filename, **backend_kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\dataset.py", line 828, in open_file
+    return open_from_index(index, read_keys, time_dims, extra_coords, errors=errors, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\dataset.py", line 767, in open_from_index
+    dimensions, variables, attributes, encoding = build_dataset_components(
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\dataset.py", line 695, in build_dataset_components
+    dims, data_var, coord_vars = build_variable_components(
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\dataset.py", line 508, in build_variable_components
+    coords_map = encode_cf_first(
+                 ^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\dataset.py", line 460, in encode_cf_first
+    if "parameter" in encode_cf:
+       ^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: argument of type 'bool' is not iterable
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\PythonProjiects\Data_of_energy_competition\preprocessing\gribToNc.py", line 105, in convert_grib_to_netcdf
+    ds = xr.open_dataset(grib_file, engine='cfgrib', backend_kwargs=alternative_backend_kwargs)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\backends\api.py", line 679, in open_dataset
+    backend_ds = backend.open_dataset(
+                 ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\xarray_plugin.py", line 112, in open_dataset
+    store = CfGribDataStore(
+            ^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\xarray_plugin.py", line 40, in __init__
+    self.ds = opener(filename, **backend_kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\dataset.py", line 828, in open_file
+    return open_from_index(index, read_keys, time_dims, extra_coords, errors=errors, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\dataset.py", line 767, in open_from_index
+    dimensions, variables, attributes, encoding = build_dataset_components(
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\dataset.py", line 695, in build_dataset_components
+    dims, data_var, coord_vars = build_variable_components(
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\dataset.py", line 508, in build_variable_components
+    coords_map = encode_cf_first(
+                 ^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\dataset.py", line 460, in encode_cf_first
+    if "parameter" in encode_cf:
+       ^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: argument of type 'bool' is not iterable
+2025-02-08 18:08:34,503 - INFO - 找到 1 个GRIB文件待处理
+2025-02-08 18:08:34,503 - INFO - 正在处理文件: E:\PythonProjiects\Data_of_energy_competition\1990-01.grib
+2025-02-08 18:08:34,551 - DEBUG - GRIB文件信息: {'edition': 1, 'gridType': 'regular_ll', 'levelType': 'sfc', 'shortName': '10u'}
+2025-02-08 18:08:40,013 - DEBUG - missing from GRIB stream: 'directionNumber'
+2025-02-08 18:08:40,013 - DEBUG - missing from GRIB stream: 'frequencyNumber'
+2025-02-08 18:08:41,446 - DEBUG - missing from GRIB stream: 'directionNumber'
+2025-02-08 18:08:41,447 - DEBUG - missing from GRIB stream: 'frequencyNumber'
+2025-02-08 18:08:41,447 - DEBUG - cache hit for ('97d17d81f9718b7cc1e0e443a0e7802f', ('parameter', 'time', 'geography', 'vertical')); using cached geometry
+2025-02-08 18:08:41,458 - DEBUG - missing from GRIB stream: 'directionNumber'
+2025-02-08 18:08:41,458 - DEBUG - missing from GRIB stream: 'frequencyNumber'
+2025-02-08 18:08:41,458 - DEBUG - cache hit for ('97d17d81f9718b7cc1e0e443a0e7802f', ('parameter', 'time', 'geography', 'vertical')); using cached geometry
+2025-02-08 18:08:42,292 - ERROR - 处理文件 E:\PythonProjiects\Data_of_energy_competition\1990-01.grib 时出错: [Errno 22] Invalid argument
+Traceback (most recent call last):
+  File "E:\PythonProjiects\Data_of_energy_competition\preprocessing\gribToNc.py", line 124, in convert_grib_to_netcdf
+    ds.to_netcdf(
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\dataset.py", line 2373, in to_netcdf
+    return to_netcdf(  # type: ignore[return-value]  # mypy cannot resolve the overloads:(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\backends\api.py", line 1914, in to_netcdf
+    writes = writer.sync(compute=compute)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\backends\common.py", line 358, in sync
+    delayed_store = chunkmanager.store(
+                    ^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\namedarray\daskmanager.py", line 247, in store
+    return store(
+           ^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\dask\array\core.py", line 1253, in store
+    compute_as_if_collection(Array, store_dsk, map_keys, **kwargs)
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\dask\base.py", line 399, in compute_as_if_collection
+    return schedule(dsk2, keys, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\dask\threaded.py", line 91, in get
+    results = get_async(
+              ^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\dask\local.py", line 516, in get_async
+    raise_exception(exc, tb)
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\dask\local.py", line 324, in reraise
+    raise exc
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\dask\local.py", line 229, in execute_task
+    result = task(data)
+             ^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\dask\_task_spec.py", line 741, in __call__
+    return self.func(*new_argspec)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\dask\_task_spec.py", line 203, in _execute_subgraph
+    res = execute_graph(final, keys=[outkey])
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\dask\_task_spec.py", line 987, in execute_graph
+    cache[key] = node(cache)
+                 ^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\dask\_task_spec.py", line 741, in __call__
+    return self.func(*new_argspec)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\dask\array\core.py", line 129, in getter
+    c = np.asarray(c)
+        ^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\indexing.py", line 573, in __array__
+    return np.asarray(self.get_duck_array(), dtype=dtype, copy=copy)
+                      ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\indexing.py", line 578, in get_duck_array
+    return self.array.get_duck_array()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\indexing.py", line 835, in get_duck_array
+    self._ensure_cached()
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\indexing.py", line 832, in _ensure_cached
+    self.array = as_indexable(self.array.get_duck_array())
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\indexing.py", line 789, in get_duck_array
+    return self.array.get_duck_array()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\indexing.py", line 652, in get_duck_array
+    array = self.array[self.key]
+            ~~~~~~~~~~^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\xarray_plugin.py", line 163, in __getitem__
+    return xr.core.indexing.explicit_indexing_adapter(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\indexing.py", line 1013, in explicit_indexing_adapter
+    result = raw_indexing_method(raw_key.tuple)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\xarray_plugin.py", line 172, in _getitem
+    return self.array[key]
+           ~~~~~~~~~~^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\dataset.py", line 373, in __getitem__
+    message = self.index.get_field(message_ids[0])  # type: ignore
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 488, in get_field
+    return ComputedKeysAdapter(self.fieldset[message_id], self.computed_keys)
+                               ~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 345, in __getitem__
+    return self.message_from_file(file, offset=item)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 341, in message_from_file
+    return Message.from_file(file, offset, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 94, in from_file
+    file.seek(offset)
+OSError: [Errno 22] Invalid argument
+2025-02-08 18:11:50,454 - INFO - 找到 2 个GRIB文件待处理
+2025-02-08 18:11:50,455 - INFO - 文件 E:\PythonProjiects\Data_of_energy_competition\NetCDF\1990-01.nc 已存在，跳过转换
+2025-02-08 18:11:50,455 - INFO - 开始处理文件: E:\PythonProjiects\Data_of_energy_competition\1990-01.grib.c48fd.idx
+2025-02-08 18:11:50,591 - ERROR - 转换过程中出错: No valid message found: 'E:\\PythonProjiects\\Data_of_energy_competition\\1990-01.grib.c48fd.idx'
+Traceback (most recent call last):
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 274, in itervalues
+    yield self.filestream.message_from_file(file, errors=errors)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 341, in message_from_file
+    return Message.from_file(file, offset, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 105, in from_file
+    raise EOFError("End of file: %r" % file)
+EOFError: End of file: <_io.BufferedReader name='E:\\PythonProjiects\\Data_of_energy_competition\\1990-01.grib.c48fd.idx'>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\PythonProjiects\Data_of_energy_competition\preprocessing\gribToNc.py", line 41, in convert_grib_to_netcdf
+    with xr.open_dataset(input_file, engine='cfgrib', backend_kwargs=backend_kwargs) as ds:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\backends\api.py", line 679, in open_dataset
+    backend_ds = backend.open_dataset(
+                 ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\xarray_plugin.py", line 112, in open_dataset
+    store = CfGribDataStore(
+            ^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\xarray_plugin.py", line 40, in __init__
+    self.ds = opener(filename, **backend_kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\dataset.py", line 827, in open_file
+    index = open_fileindex(stream, indexpath, index_keys, ignore_keys=ignore_keys, filter_by_keys=filter_by_keys)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\dataset.py", line 806, in open_fileindex
+    index = messages.FileIndex.from_indexpath_or_filestream(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 533, in from_indexpath_or_filestream
+    return cls.from_fieldset(filestream, index_keys, computed_keys)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 379, in from_fieldset
+    return cls.from_fieldset_and_iteritems(fieldset, iteritems, index_keys, computed_keys)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 392, in from_fieldset_and_iteritems
+    for field_id, raw_field in iteritems:
+                               ^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 292, in __iter__
+    for message in self.itervalues():
+                   ^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 278, in itervalues
+    raise EOFError("No valid message found: %r" % self.filestream.path)
+EOFError: No valid message found: 'E:\\PythonProjiects\\Data_of_energy_competition\\1990-01.grib.c48fd.idx'
+2025-02-08 18:11:50,597 - ERROR - 转换失败: 1990-01.grib.c48fd.idx
+2025-02-08 18:11:59,246 - INFO - 找到 1 个GRIB文件待处理
+2025-02-08 18:11:59,246 - INFO - 文件 E:\PythonProjiects\Data_of_energy_competition\NetCDF\1990-01.nc 已存在，跳过转换
+2025-02-08 18:12:08,697 - INFO - 找到 1 个GRIB文件待处理
+2025-02-08 18:12:08,697 - INFO - 开始处理文件: E:\PythonProjiects\Data_of_energy_competition\1990-01.grib
+2025-02-08 18:12:13,824 - DEBUG - missing from GRIB stream: 'directionNumber'
+2025-02-08 18:12:13,824 - DEBUG - missing from GRIB stream: 'frequencyNumber'
+2025-02-08 18:12:15,266 - DEBUG - missing from GRIB stream: 'directionNumber'
+2025-02-08 18:12:15,266 - DEBUG - missing from GRIB stream: 'frequencyNumber'
+2025-02-08 18:12:15,266 - DEBUG - cache hit for ('97d17d81f9718b7cc1e0e443a0e7802f', ('parameter', 'time', 'geography')); using cached geometry
+2025-02-08 18:12:15,277 - DEBUG - missing from GRIB stream: 'directionNumber'
+2025-02-08 18:12:15,277 - DEBUG - missing from GRIB stream: 'frequencyNumber'
+2025-02-08 18:12:15,277 - DEBUG - cache hit for ('97d17d81f9718b7cc1e0e443a0e7802f', ('parameter', 'time', 'geography')); using cached geometry
+2025-02-08 18:12:15,440 - INFO - 总时间步数: 32
+2025-02-08 18:12:24,654 - INFO - 处理时间步 0 到 32
+2025-02-08 18:12:29,979 - DEBUG - missing from GRIB stream: 'directionNumber'
+2025-02-08 18:12:29,979 - DEBUG - missing from GRIB stream: 'frequencyNumber'
+2025-02-08 18:12:29,979 - DEBUG - cache hit for ('97d17d81f9718b7cc1e0e443a0e7802f', ('parameter', 'time', 'geography')); using cached geometry
+2025-02-08 18:12:29,985 - DEBUG - missing from GRIB stream: 'directionNumber'
+2025-02-08 18:12:29,985 - DEBUG - missing from GRIB stream: 'frequencyNumber'
+2025-02-08 18:12:29,985 - DEBUG - cache hit for ('97d17d81f9718b7cc1e0e443a0e7802f', ('parameter', 'time', 'geography')); using cached geometry
+2025-02-08 18:12:29,994 - DEBUG - missing from GRIB stream: 'directionNumber'
+2025-02-08 18:12:29,995 - DEBUG - missing from GRIB stream: 'frequencyNumber'
+2025-02-08 18:12:29,995 - DEBUG - cache hit for ('97d17d81f9718b7cc1e0e443a0e7802f', ('parameter', 'time', 'geography')); using cached geometry
+2025-02-08 18:12:30,735 - ERROR - 转换过程中出错: [Errno 22] Invalid argument
+Traceback (most recent call last):
+  File "E:\PythonProjiects\Data_of_energy_competition\preprocessing\gribToNc.py", line 79, in convert_grib_to_netcdf
+    chunk.to_netcdf(
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\dataset.py", line 2373, in to_netcdf
+    return to_netcdf(  # type: ignore[return-value]  # mypy cannot resolve the overloads:(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\backends\api.py", line 1905, in to_netcdf
+    dump_to_store(
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\backends\api.py", line 1952, in dump_to_store
+    store.store(variables, attrs, check_encoding, writer, unlimited_dims=unlimited_dims)
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\backends\common.py", line 454, in store
+    variables, attributes = self.encode(variables, attributes)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\backends\common.py", line 638, in encode
+    variables, attributes = cf_encoder(variables, attributes)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\conventions.py", line 759, in cf_encoder
+    new_vars = {k: encode_cf_variable(v, name=k) for k, v in variables.items()}
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\conventions.py", line 101, in encode_cf_variable
+    var = coder.encode(var, name=name)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\coding\times.py", line 1110, in encode
+    variable.data.dtype, np.datetime64
+    ^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\variable.py", line 473, in data
+    return self._data.get_duck_array()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\indexing.py", line 835, in get_duck_array
+    self._ensure_cached()
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\indexing.py", line 832, in _ensure_cached
+    self.array = as_indexable(self.array.get_duck_array())
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\indexing.py", line 789, in get_duck_array
+    return self.array.get_duck_array()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\indexing.py", line 652, in get_duck_array
+    array = self.array[self.key]
+            ~~~~~~~~~~^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\xarray_plugin.py", line 163, in __getitem__
+    return xr.core.indexing.explicit_indexing_adapter(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\indexing.py", line 1013, in explicit_indexing_adapter
+    result = raw_indexing_method(raw_key.tuple)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\xarray_plugin.py", line 172, in _getitem
+    return self.array[key]
+           ~~~~~~~~~~^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\dataset.py", line 373, in __getitem__
+    message = self.index.get_field(message_ids[0])  # type: ignore
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 488, in get_field
+    return ComputedKeysAdapter(self.fieldset[message_id], self.computed_keys)
+                               ~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 345, in __getitem__
+    return self.message_from_file(file, offset=item)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 341, in message_from_file
+    return Message.from_file(file, offset, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 94, in from_file
+    file.seek(offset)
+OSError: [Errno 22] Invalid argument
+2025-02-08 18:12:30,832 - ERROR - 转换失败: 1990-01.grib
+2025-02-08 18:16:37,298 - INFO - 找到 1 个GRIB文件待处理
+2025-02-08 18:16:37,298 - INFO - 文件 E:\PythonProjiects\Data_of_energy_competition\NetCDF\1990-01.nc 已存在，跳过转换
+2025-02-08 18:16:44,451 - INFO - 找到 1 个GRIB文件待处理
+2025-02-08 18:16:44,451 - INFO - 开始处理文件: E:\PythonProjiects\Data_of_energy_competition\1990-01.grib
+2025-02-08 18:16:50,145 - DEBUG - missing from GRIB stream: 'directionNumber'
+2025-02-08 18:16:50,145 - DEBUG - missing from GRIB stream: 'frequencyNumber'
+2025-02-08 18:16:51,627 - DEBUG - missing from GRIB stream: 'directionNumber'
+2025-02-08 18:16:51,627 - DEBUG - missing from GRIB stream: 'frequencyNumber'
+2025-02-08 18:16:51,627 - DEBUG - cache hit for ('97d17d81f9718b7cc1e0e443a0e7802f', ('parameter', 'time', 'geography')); using cached geometry
+2025-02-08 18:16:51,636 - DEBUG - missing from GRIB stream: 'directionNumber'
+2025-02-08 18:16:51,637 - DEBUG - missing from GRIB stream: 'frequencyNumber'
+2025-02-08 18:16:51,637 - DEBUG - cache hit for ('97d17d81f9718b7cc1e0e443a0e7802f', ('parameter', 'time', 'geography')); using cached geometry
+2025-02-08 18:16:51,781 - INFO - 总时间步数: 32
+2025-02-08 18:17:00,913 - INFO - 处理时间步 0 到 32
+2025-02-08 18:17:06,316 - DEBUG - missing from GRIB stream: 'directionNumber'
+2025-02-08 18:17:06,317 - DEBUG - missing from GRIB stream: 'frequencyNumber'
+2025-02-08 18:17:06,317 - DEBUG - cache hit for ('97d17d81f9718b7cc1e0e443a0e7802f', ('parameter', 'time', 'geography')); using cached geometry
+2025-02-08 18:17:06,322 - DEBUG - missing from GRIB stream: 'directionNumber'
+2025-02-08 18:17:06,322 - DEBUG - missing from GRIB stream: 'frequencyNumber'
+2025-02-08 18:17:06,322 - DEBUG - cache hit for ('97d17d81f9718b7cc1e0e443a0e7802f', ('parameter', 'time', 'geography')); using cached geometry
+2025-02-08 18:17:06,331 - DEBUG - missing from GRIB stream: 'directionNumber'
+2025-02-08 18:17:06,332 - DEBUG - missing from GRIB stream: 'frequencyNumber'
+2025-02-08 18:17:06,332 - DEBUG - cache hit for ('97d17d81f9718b7cc1e0e443a0e7802f', ('parameter', 'time', 'geography')); using cached geometry
+2025-02-08 18:17:31,024 - ERROR - 转换过程中出错: [Errno 22] Invalid argument
+Traceback (most recent call last):
+  File "E:\PythonProjiects\Data_of_energy_competition\preprocessing\gribToNc.py", line 69, in convert_grib_to_netcdf
+    chunk.to_netcdf(
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\dataset.py", line 2373, in to_netcdf
+    return to_netcdf(  # type: ignore[return-value]  # mypy cannot resolve the overloads:(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\backends\api.py", line 1905, in to_netcdf
+    dump_to_store(
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\backends\api.py", line 1952, in dump_to_store
+    store.store(variables, attrs, check_encoding, writer, unlimited_dims=unlimited_dims)
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\backends\common.py", line 454, in store
+    variables, attributes = self.encode(variables, attributes)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\backends\common.py", line 638, in encode
+    variables, attributes = cf_encoder(variables, attributes)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\conventions.py", line 759, in cf_encoder
+    new_vars = {k: encode_cf_variable(v, name=k) for k, v in variables.items()}
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\conventions.py", line 101, in encode_cf_variable
+    var = coder.encode(var, name=name)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\coding\times.py", line 1110, in encode
+    variable.data.dtype, np.datetime64
+    ^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\variable.py", line 473, in data
+    return self._data.get_duck_array()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\indexing.py", line 835, in get_duck_array
+    self._ensure_cached()
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\indexing.py", line 832, in _ensure_cached
+    self.array = as_indexable(self.array.get_duck_array())
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\indexing.py", line 789, in get_duck_array
+    return self.array.get_duck_array()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\indexing.py", line 652, in get_duck_array
+    array = self.array[self.key]
+            ~~~~~~~~~~^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\xarray_plugin.py", line 163, in __getitem__
+    return xr.core.indexing.explicit_indexing_adapter(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\xarray\core\indexing.py", line 1013, in explicit_indexing_adapter
+    result = raw_indexing_method(raw_key.tuple)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\xarray_plugin.py", line 172, in _getitem
+    return self.array[key]
+           ~~~~~~~~~~^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\dataset.py", line 373, in __getitem__
+    message = self.index.get_field(message_ids[0])  # type: ignore
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 488, in get_field
+    return ComputedKeysAdapter(self.fieldset[message_id], self.computed_keys)
+                               ~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 345, in __getitem__
+    return self.message_from_file(file, offset=item)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 341, in message_from_file
+    return Message.from_file(file, offset, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda3\envs\Data_of_energy_competition\Lib\site-packages\cfgrib\messages.py", line 94, in from_file
+    file.seek(offset)
+OSError: [Errno 22] Invalid argument
+2025-02-08 18:17:31,685 - ERROR - 转换失败: 1990-01.grib
