@@ -8,11 +8,11 @@ import matplotlib.pyplot as plt
 import folium
 import numpy as np
 
-# 加载数据
-data = pd.read_csv(dpl.WIND_POWER_BANK_PATH)
+# 加载数据，只读取经纬度列
+data = pd.read_excel(dpl.WIND_POWER_BANK_PATH, usecols=['Latitude', 'Longitude', 'Capacity (MW)'])
 
 # 创建地图对象
-initial_location = [data['latitude'].iloc[0], data['longitude'].iloc[0]]
+initial_location = [data['Latitude'].iloc[0], data['Longitude'].iloc[0]]
 m = folium.Map(location=initial_location, zoom_start=2)
 
 # 创建聚类标记层
@@ -31,7 +31,7 @@ def normalize_radius(capacity):
 # 添加发电厂标记
 for idx, row in data.iterrows():
     # 根据容量大小确定颜色
-    capacity = row['capacity_mw']
+    capacity = row['Capacity (MW)']
     for i, bin_edge in enumerate(capacity_bins):
         if capacity <= bin_edge:
             color = colors[i - 1]  # 使用 i-1 来匹配颜色
@@ -42,15 +42,14 @@ for idx, row in data.iterrows():
 
     # 创建弹出窗口内容
     popup_content = f"""
-    <b>Country:</b> {row['country']}<br>
-    <b>Capacity:</b> {row['capacity_mw']} MW<br>
-    <b>Latitude:</b> {row['latitude']}<br>
-    <b>Longitude:</b> {row['longitude']}
+    <b>Capacity:</b> {row['Capacity (MW)']} MW<br>
+    <b>Latitude:</b> {row['Latitude']}<br>
+    <b>Longitude:</b> {row['Longitude']}
     """
 
     # 添加圆圈标记
     folium.CircleMarker(
-        location=[row['latitude'], row['longitude']],
+        location=[row['Latitude'], row['Longitude']],
         radius=radius,  # 使用归一化后的半径
         color=color,  # 根据容量区间设置颜色
         fill=True,
