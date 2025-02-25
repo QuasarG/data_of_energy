@@ -15,7 +15,7 @@ def filter_wind_farm(input_file, output_file):
         print(f'原始数据行数: {original_count}')
         
         # 筛选条件：Status为operating或construction，且Installation Type为Onshore
-        status_mask = df['Status'].isin(['operating', 'construction'])
+        status_mask = df['Status'].isin(['operating'])
         type_mask = df['Installation Type'] == 'Onshore'
         
         # 应用筛选条件
@@ -37,7 +37,7 @@ def filter_wind_farm(input_file, output_file):
 
 def main():
     # 设置输入输出文件路径
-    input_file = r'E:\\大二上\\竞赛\\能经大赛\\data\\global_wind_farm.xlsx'
+    input_file = r'E:\PythonProjiects\Data_of_energy_competition\filtered_wind_farm.xlsx'
     output_file = 'filtered_wind_farm.xlsx'
     
     # 执行筛选
