@@ -1,191 +1,223 @@
 import os
 import numpy as np
-import netCDF4 as nc
 import pandas as pd
+import xarray as xr
+from pathlib import Path
 from tqdm import tqdm
-from scipy.spatial import cKDTree
-import logging
+import warnings
+from concurrent.futures import ProcessPoolExecutor
+from functools import partial
 
-# 配置日志记录
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    filename='processing.log'
-)
+warnings.filterwarnings('ignore')
 
-# 常量定义
-WIND_DIR = r"E:\PythonProjiects\Data_of_energy_competition\filtered_wind_farm.xlsx"
-Z0_DIR = "path/to/z0_files"
-CSV_FILE = "path/to/power_plants.csv"
-TARGET_HEIGHT = 109  # 目标高度（米）
-REFERENCE_HEIGHT = 10  # 参考高度（米）
-VALID_RANGE = (5, 20)  # 有效风速范围（m/s）
-YEARS = range(2010, 2021)  # 需要处理的年份范围
+# ----------------------
+# 配置参数
+# ----------------------
+wind_dir = Path(r"G:/windspeed")
+roughness_dir = Path(r"G:/monthly aerodynamic roughness length dataset")
+output_dir = Path(r"E:\PythonProjiects\Data_of_energy_competition\output")
+farm_file = Path(r"E:\PythonProjiects\Data_of_energy_competition\preprocessing\filtered_wind_farm.xlsx")
 
-def load_power_plants(csv_path):
-    """加载风力发电场数据"""
-    try:
-        power_plants = pd.read_csv(csv_path)
-        # 转换经度到 0-360 范围
-        power_plants['Longitude'] = power_plants['Longitude'].apply(lambda x: x + 360 if x < 0 else x)
-        return power_plants
-    except Exception as e:
-        raise ValueError(f"加载发电场数据失败: {e}")
 
-def preprocess_z0_indices(z0_dir, power_plants):
-    """预处理粗糙度索引"""
-    z0_files = sorted([f for f in os.listdir(z0_dir) if f.endswith('.nc')])
-    lats_z0, lons_z0 = None, None
-
-    # 获取基准网格
-    with nc.Dataset(os.path.join(z0_dir, z0_files[0])) as ds:
-        lats_z0 = ds['lat'][:]
-        lons_z0 = ds['lon'][:]
-        lons_z0 = np.where(lons_z0 < 0, lons_z0 + 360, lons_z0)
-
-    # 计算最近网格点索引
-    lat_idx, lon_idx = find_nearest_grid_points(
-        power_plants['Latitude'].values,
-        power_plants['Longitude'].values,
-        lats_z0, lons_z0
-    )
-    power_plants['z0_lat_idx'] = lat_idx
-    power_plants['z0_lon_idx'] = lon_idx
-
-    return power_plants
-
-def find_nearest_grid_points(lats, lons, nc_lats, nc_lons):
-    """找到最近的网格点"""
-    lon_grid, lat_grid = np.meshgrid(nc_lons, nc_lats)
-    grid_points = np.column_stack((lat_grid.ravel(), lon_grid.ravel()))
-    tree = cKDTree(grid_points)
-    query_points = np.column_stack((lats, lons))
-    _, indices = tree.query(query_points)
-    lat_idx = indices // len(nc_lons)
-    lon_idx = indices % len(nc_lons)
+# ----------------------
+# 全局函数定义 (确保可序列化)
+# ----------------------
+def find_nearest(lat_array, lon_array, target_lat, target_lon):
+    """查找最近网格索引"""
+    lat_idx = np.abs(lat_array - target_lat).argmin()
+    lon_idx = np.abs(lon_array - (target_lon % 360)).argmin()  # 处理经度环绕
     return lat_idx, lon_idx
 
-def calculate_average_z0(z0_dir, z0_files, power_plants):
-    """计算每个地点的多年平均粗糙度"""
-    avg_z0 = np.zeros(len(power_plants))
-    z0_values = []
 
-    for file in tqdm(z0_files, desc="计算多年平均粗糙度"):
-        with nc.Dataset(os.path.join(z0_dir, file)) as ds:
-            z0_data = ds['Monthly_z0m_25km'][:]
-            for i, row in power_plants.iterrows():
-                lat_idx = row['z0_lat_idx']
-                lon_idx = row['z0_lon_idx']
-                value = z0_data[lat_idx, lon_idx]
-                if value > 0:  # 排除无效值
-                    z0_values.append(value)
+def process_row(row, wind_coords, z0_coords):
+    """处理单行数据"""
+    try:
+        # 解包坐标数据
+        wind_lat, wind_lon = wind_coords['lat'], wind_coords['lon']
+        z0_lat, z0_lon = z0_coords['lat'], z0_coords['lon']
 
-    global_avg = np.mean(z0_values) if z0_values else 0.03
-    avg_z0[:] = global_avg
-    power_plants['avg_z0'] = avg_z0
-    return power_plants
+        # 计算索引
+        w_lat_idx, w_lon_idx = find_nearest(wind_lat, wind_lon, row.Latitude, row.Longitude)
+        z_lat_idx, z_lon_idx = find_nearest(z0_lat, z0_lon, row.Latitude, row.Longitude)
+        return (w_lat_idx, w_lon_idx, z_lat_idx, z_lon_idx)
+    except Exception as e:
+        print(f"处理坐标({row.Latitude}, {row.Longitude})时出错: {str(e)}")
+        return (-1, -1, -1, -1)
 
-def process_monthly_file(wind_path, z0_dir, power_plants):
-    """处理单个月份文件"""
-    valid_hours = np.zeros(len(power_plants), dtype=np.int32)
-    total_time = 0
 
-    # 获取对应粗糙度文件
-    year_month = os.path.basename(wind_path).split('_')[0]
-    z0_file = f"{year_month[:4]}{year_month[5:7]}15_global_monthly_z0m_25km.nc"
-    z0_path = os.path.join(z0_dir, z0_file)
+# ----------------------
+# 预处理阶段：生成月平均粗糙度
+# ----------------------
+def generate_monthly_z0mean():
+    """生成2010-2020年各月平均粗糙度文件"""
+    avg_z0_dir = output_dir / "monthly_average_z0"
+    avg_z0_dir.mkdir(parents=True, exist_ok=True)
 
-    # 加载粗糙度数据
-    if os.path.exists(z0_path):
-        with nc.Dataset(z0_path) as ds:
-            z0_data = ds['Monthly_z0m_25km'][:]
-            current_z0 = z0_data[
-                power_plants['z0_lat_idx'].values,
-                power_plants['z0_lon_idx'].values
-            ]
-            valid_mask = (current_z0 > 0) & ~np.isnan(current_z0)
-            current_z0[~valid_mask] = power_plants['avg_z0'][~valid_mask].values
-    else:
-        current_z0 = power_plants['avg_z0'].values
+    for month in tqdm(range(1, 13), desc="生成月平均粗糙度"):
+        # 收集同月所有年份文件
+        pattern = f"*{month:02d}15_global_monthly_z0m_25km.nc"
+        files = list(roughness_dir.glob(pattern))
 
-    # 计算修正系数
-    Z1, Z2 = REFERENCE_HEIGHT, TARGET_HEIGHT
-    with np.errstate(divide='ignore', invalid='ignore'):
-        coeff = np.log(Z2 / current_z0) / np.log(Z1 / current_z0)
-        coeff = np.nan_to_num(coeff, nan=1.0)
+        if not files:
+            print(f"警告: 未找到{month:02d}月的粗糙度文件")
+            continue
 
-    # 处理风速数据
-    with nc.Dataset(wind_path) as ds:
-        times = ds.dimensions['time'].size
-        lats = ds['lat'][:]
-        lons = ds['lon'][:]
-        lons = np.where(lons < 0, lons + 360, lons)
+        # 计算时空平均
+        with xr.open_mfdataset(files, combine='nested', concat_dim='time') as ds:
+            z0_mean = ds['Monthly_z0m_25km'].mean(dim='time', skipna=True)
+            z0_mean = z0_mean.where(z0_mean != 0)  # 处理缺失值标记
 
-        # 预计算坐标索引
-        lat_idx, lon_idx = find_nearest_grid_points(
-            power_plants['Latitude'].values,
-            power_plants['Longitude'].values,
-            lats, lons
+        # 保存为相同格式的新文件
+        output_file = avg_z0_dir / f"mean_{month:02d}_z0m.nc"
+        z0_mean.to_netcdf(
+            output_file,
+            encoding={'Monthly_z0m_25km': {'zlib': True, 'complevel': 5}}
         )
 
-        for start in range(0, times, 50):  # 分块处理
-            end = min(start + 50, times)
-            wind_slice = ds['wind_speed'][start:end, :, :]
 
-            # 提取对应位置风速
-            wind_speeds = wind_slice[:, lat_idx, lon_idx].T
-            adjusted = wind_speeds * coeff[:, np.newaxis]
+# ----------------------
+# 预处理阶段：建立风电场索引
+# ----------------------
+def precompute_farm_indices():
+    """预计算风电场索引（Windows兼容版）"""
+    # 加载样本数据
+    with xr.open_dataset(next(wind_dir.glob("*.nc"))) as sample_wind:
+        wind_coords = {
+            'lat': sample_wind.lat.values,
+            'lon': sample_wind.lon.values
+        }
 
-            # 统计有效时间
-            valid = np.logical_and(adjusted >= VALID_RANGE[0], adjusted <= VALID_RANGE[1])
-            valid_hours += np.sum(valid, axis=1)
-            total_time += (end - start)
+    with xr.open_dataset(next(roughness_dir.glob("*.nc"))) as sample_z0:
+        z0_coords = {
+            'lat': sample_z0.lat.values,
+            'lon': sample_z0.lon.values
+        }
 
-    return valid_hours, total_time
+    # 加载风电场位置
+    farms = pd.read_excel(farm_file)
+    print(f"正在处理 {len(farms)} 个风电场...")
 
-def main():
-    # 加载发电场数据
-    power_plants = load_power_plants(CSV_FILE)
+    # 准备参数列表
+    params = [(row, wind_coords, z0_coords) for row in farms.itertuples()]
 
-    # 预处理粗糙度索引
-    power_plants = preprocess_z0_indices(Z0_DIR, power_plants)
+    # 多进程处理
+    with ProcessPoolExecutor() as executor:
+        results = list(tqdm(
+            executor.map(partial(process_row, wind_coords=wind_coords, z0_coords=z0_coords),
+                         farms.itertuples()),
+            total=len(farms),
+            desc="预计算索引"
+        ))
 
-    # 计算多年平均粗糙度
-    z0_files = sorted([f for f in os.listdir(Z0_DIR) if f.endswith('.nc')])
-    power_plants = calculate_average_z0(Z0_DIR, z0_files, power_plants)
+    # 保存结果
+    farms[['wind_lat', 'wind_lon', 'z0_lat', 'z0_lon']] = results
+    valid_farms = farms[(farms['wind_lat'] >= 0) & (farms['z0_lat'] >= 0)]
+    valid_farms.to_csv(output_dir / "wind_farm_indices.csv", index=False)
+    print(f"成功处理 {len(valid_farms)}/{len(farms)} 个有效风电场")
 
-    # 处理每年数据
-    for year in YEARS:
-        logging.info(f"开始处理年份：{year}")
-        yearly_valid = np.zeros(len(power_plants), dtype=np.int32)
-        total_time = 0
 
-        # 获取当年所有风速文件
-        wind_files = [f for f in os.listdir(WIND_DIR)
-                     if f.startswith(f"{year}-") and f.endswith('.nc')]
+# ----------------------
+# 核心处理函数
+# ----------------------
+def process_windspeed():
+    # 加载预计算数据
+    try:
+        farms = pd.read_csv(output_dir / "wind_farm_indices.csv")
+    except FileNotFoundError:
+        print("错误: 未找到预计算的索引文件，请先运行预处理步骤")
+        return
 
-        for wind_file in tqdm(wind_files, desc=f'处理{year}年'):
-            wind_path = os.path.join(WIND_DIR, wind_file)
-            valid_hours, time_count = process_monthly_file(
-                wind_path,
-                Z0_DIR,
-                power_plants
-            )
-            yearly_valid += valid_hours
-            total_time += time_count
+    all_results = []
 
-        # 计算可用时间百分比
-        availability = (yearly_valid / total_time) * 100 if total_time > 0 else 0
+    # 处理每个风速文件
+    wind_files = list(wind_dir.glob("*.nc"))
+    for wind_file in tqdm(wind_files, desc="处理风速文件"):
+        try:
+            # 解析时间信息
+            year, month = map(int, wind_file.stem.split("_")[0].split("-"))
 
-        # 保存结果
-        result_df = pd.DataFrame({
-            'Latitude': power_plants['Latitude'],
-            'Longitude': power_plants['Longitude'],
-            'valid_hours': yearly_valid,
-            'availability': availability
-        })
-        result_df.to_csv(f'wind_availability_{year}.csv', index=False)
-        logging.info(f"完成{year}年处理，结果已保存")
+            # 加载粗糙度数据
+            if 2010 <= year <= 2020:
+                z0_file = roughness_dir / f"{year}{month:02d}15_global_monthly_z0m_25km.nc"
+            else:
+                z0_file = output_dir / "monthly_average_z0" / f"mean_{month:02d}_z0m.nc"
 
+            if not z0_file.exists():
+                print(f"警告: 未找到粗糙度文件 {z0_file}")
+                continue
+
+            with xr.open_dataset(z0_file) as z0_data:
+                z0_values = z0_data['Monthly_z0m_25km'].where(z0_data['Monthly_z0m_25km'] > 0)
+
+                # 加载风速数据
+                with xr.open_dataset(wind_file) as wind_data:
+                    u10 = wind_data['wind_speed'].where(wind_data['wind_speed'] != -9999.0)
+
+                    # 处理每个风电场
+                    for _, farm in farms.iterrows():
+                        try:
+                            # 提取粗糙度
+                            z0 = z0_values.isel(
+                                lat=int(farm['z0_lat']),
+                                lon=int(farm['z0_lon'])
+                            ).item()
+
+                            if np.isnan(z0) or z0 <= 0:
+                                continue
+
+                            # 提取风速
+                            u10_series = u10.isel(
+                                lat=int(farm['wind_lat']),
+                                lon=int(farm['wind_lon'])
+                            ).values
+
+                            # 计算调整系数
+                            with np.errstate(divide='ignore'):
+                                adjustment = np.log(109 / z0) / np.log(10 / z0)
+
+                            # 调整风速并统计有效时间
+                            u109 = u10_series * adjustment
+                            valid_hours = np.sum((u109 >= 5) & (u109 <= 20) & (~np.isnan(u109)))
+
+                            all_results.append({
+                                'year': year,
+                                'month': month,
+                                'lat': farm['Latitude'],
+                                'lon': farm['Longitude'],
+                                'valid_hours': valid_hours
+                            })
+
+                        except Exception as e:
+                            print(f"处理风电场({farm['Latitude']}, {farm['Longitude']})时出错: {str(e)}")
+
+        except Exception as e:
+            print(f"处理文件 {wind_file} 时发生严重错误: {str(e)}")
+            continue
+
+    # 汇总结果
+    result_df = pd.DataFrame(all_results)
+    if not result_df.empty:
+        annual_stats = result_df.groupby(['year', 'lat', 'lon'])['valid_hours'].sum().reset_index()
+        annual_stats.to_csv(output_dir / "annual_valid_hours.csv", index=False)
+        print("处理完成，结果已保存")
+    else:
+        print("警告: 未生成任何有效结果")
+
+
+# ----------------------
+# 主执行流程
+# ----------------------
 if __name__ == "__main__":
-    main()
+    # 创建输出目录
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # 步骤1：生成月平均粗糙度文件
+    if not (output_dir / "monthly_average_z0").exists():
+        generate_monthly_z0mean()
+
+    # 步骤2：预计算风电场索引
+    if not (output_dir / "wind_farm_indices.csv").exists():
+        precompute_farm_indices()
+
+    # 步骤3：处理所有风速数据
+    process_windspeed()
